@@ -73,11 +73,11 @@ Initially, I would deliver routine reports as a static HTML files. A HTML report
 
 ### Part 7b
 
-Automated QC/QA can be integrated into the snakemake workflow as well as the final report generation. 
+Automated QC/QA can be integrated into the snakemake workflow as well as the final report generation. Snakemake would allow me define multiple QC tests as separate tasks as well as create a dependency that would require a successful QC tests before the data transfer is initiated.
 
 ### Part 7c
 
-My preferred method is to continue to use the snakemake workflow system with available linux and python tools and libraries. To perform a data transfer through a defined port I would use the `scp -p` file copy tool. Snakemake has built-in error-catching and input/output validation mechanisms. See [rules/transfer.smk](rules/transfer.smk) for an example. 
+My preferred method is to continue to use the snakemake workflow system with available linux and python tools and libraries. To perform a data transfer through a defined port I would use the `scp -p` linux file copy tool. Snakemake has built-in error-catching and input/output validation mechanisms. See [rules/transfer.smk](rules/transfer.smk) for an example. 
 
 ## Question 8
 
