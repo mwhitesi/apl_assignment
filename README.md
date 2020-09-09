@@ -26,6 +26,7 @@ Snakemake will auto-generate the following directories:
 * genotyped - final variant output files
 * logs - error and progress text files
 
+Parameters and workflow config are defined in one location: `config.yaml`
 
 ## Question 3
 
@@ -44,7 +45,7 @@ To be explicit, the [rules/calling.smk](rules/calling.smk) snakemake file perfor
 
 ### Part 3b
 
-To validate and tune variant calling parameters, I would 
+To validate and tune variant calling procedures parameters, I would begin by targeting the set of lower-confidence variants from the NGS pipeline and using a complementary, higher-accuracy variant calling method such as Sanger sequencing, characterize the variants. The reported variant calls from the complementary would be compared to the NGS calls. Disagreeing variants calls would be used to select appropriate settings.  
 
 ## Question 4
 
@@ -52,9 +53,17 @@ The process I would select to get the PCR data from the desktop would be to use 
 
 ## Question 5
 
-To monitor multiple sources of input data is one of the strengths of Snakemake and easily orchestrated within an existing regularly scheduled Snakemake workflow. My approach would maintain lists tracking sample IDs appearing in PCR and genome sequence data as well as their status. Critical to integrating diverse analysis for different samples is to have a consistent sample identifiers. The snakemake task would identify amoung downloaded analysis data, 1) the set of pending BAM sample IDs and 2) the set of sample IDs with matched PCR / BAM data. The second set would be used to initiate downstream analysis in Snakemake. I made a sample snakemake [file](rules/pending.smk) to demonstrate the proposed workflow.
+To monitor multiple sources of input data is one of the strengths of Snakemake and easily orchestrated within an existing regularly scheduled Snakemake workflow. My approach would maintain lists tracking sample IDs appearing in PCR and genome sequence data as well as their status. Critical to integrating diverse analysis for different samples is to have a consistent sample identifiers. The snakemake task would identify amoung downloaded analysis data, 1) the set of pending unmatched BAM sample IDs and 2) the set of sample IDs with matched PCR / BAM data. The second set would be used to initiate downstream analysis in Snakemake. I made a sample snakemake [file](rules/pending.smk) to demonstrate the proposed workflow.
 
-## Question 6 
+## Question 6
+
+### Part 6a 
+
+In addition to reporting individual differences between PCR and NGS calls for specific loci, I would also record and report the PCR and NGS agreement on aggregate across all loci in the test for each sample. I would also monitor and summerize the aggreement in variant calls across samples using a reoccuring report. Multiple disagreements between these complementary methods may indicate a systemic problem or error in sample-processing (e.g. mislabelled sample). I would flag samples that have above a certain threshold of mismatches between methods. A immediate notification could be sent when such a case is identified -- at which time further investigation can be undertaken.
+
+### Part 6b
+
+My planned workflow would generate a final HTML report that would summerize per sample aggreement between the NGS and PCR variant calling methods. To notify potential issues, the report could contain conditional a warning section at the top of the report that would highlight problematic cases. If immediate notification 
 
 ## Question 7
 
