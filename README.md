@@ -63,7 +63,7 @@ In addition to reporting individual differences between PCR and NGS calls for sp
 
 ### Part 6b
 
-My planned workflow would generate a final HTML report that would summerize per sample aggreement between the NGS and PCR variant calling methods. To notify potential issues, the report could contain conditional a warning section at the top of the report that would highlight problematic cases. If immediate notification 
+My planned workflow would generate a final HTML report that would summerize per sample aggreement between the NGS and PCR variant calling methods. To notify potential issues, the report could contain a warning section at the top of the report that would highlight problematic cases. If immediate notification is needed, an email alert could be triggered from the snakemake workflow script: `shell("mail -s "an error occurred" youremail@provider.com < {log}")`
 
 ## Question 7
 
