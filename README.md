@@ -1,97 +1,41 @@
-# Snakemake workflow: dna-seq-gatk-variant-calling
+# Laboratory Scientist 2/Data Scientist- Matthew Whiteside Assignment Answers 
 
-[![Snakemake](https://img.shields.io/badge/snakemake-≥5.14.0-brightgreen.svg)](https://snakemake.bitbucket.io)
-[![GitHub actions status](https://github.com/snakemake-workflows/dna-seq-gatk-variant-calling/workflows/Tests/badge.svg?branch=master)](https://github.com/snakemake-workflows/dna-seq-gatk-variant-calling/actions?query=branch%3Amaster+workflow%3ATests)
+## Question 1
 
-This Snakemake pipeline implements the [GATK best-practices workflow](https://gatk.broadinstitute.org/hc/en-us/articles/360035535932-Germline-short-variant-discovery-SNPs-Indels-) for calling small germline variants.
-
-## Authors
-
-* Johannes Köster (https://koesterlab.github.io)
+* [Git Repository](https://github.com/mwhitesi/apl_assignment_test)
 
 
-## Usage
+## Question 2
 
-In any case, if you use this workflow in a paper, don't forget to give credits to the authors by citing the URL of this (original) repository and, if available, its DOI (see above).
+For workflows involving external tools and multiple steps (such as variant calling), I have used the Smakemake workflow system. Snakemake has a number of 
+advantages to help make multi-step analyses easily deployable and reproducible.
+
+The Snakemake syntax is comprised of rules that determine the input/output data file dependencies and order of task execution. Snakemake has a predefined recommended project structure. I have cloned the Snakemake github template for GATK-based variant calling that uses this recommended structure.
+
+I have marked the files involved in the NGS reference assembly that will be not needed if the project is limited to variant calling. 
+
+The structure is as follows:
 
 
-#### Step 1: Obtain a copy of this workflow
+## Question 3
 
-1. Create a new github repository using this workflow [as a template](https://help.github.com/en/articles/creating-a-repository-from-a-template).
-2. [Clone](https://help.github.com/en/articles/cloning-a-repository) the newly created repository to your local system, into the place where you want to perform the data analysis.
+### Part 3a
 
-#### Step 2: Configure workflow
+For the NGS variant calling I would use the GATK suite of tools. The snakemake file: [rules/calling.smk](rules/calling.smk) defines the individual tools and parameters to generate a combined .vcf variant file. 
+(Note: I am not sure if a cohort approach would be suitable in a laboratory workflow. A joint-cohort approach is reported to improve the sensitivity & accuracy of variant calling and is the approach described here)
 
-Configure the workflow according to your needs via editing the files `config.yaml`, `samples.tsv` and `units.tsv`.
+To be explicit, the [rules/calling.smk](rules/calling.smk) snakemake file performs the following steps in order:  
 
-#### Step 3: Execute workflow
+1. Extract the region of interest using `bedextract` (rule: compose_regions)
+1. Identify variants with `haplotypecaller` for each sample (rule: call_variants)
+1. Combine sample variants into a single variant file with `combinegvcfs` (rule: combine_calls)
+1. Perform joint genotyping using all samples with `genotypegvcfs` (rule: genotype_variants)
+1. Merge variants for each region into a single output file using `mergevcfs` (rule: merge_variants)
 
-This workflow will automatically download reference genomes and annotation.
-In order to save time and space, consider to use [between workflow caching](https://snakemake.readthedocs.io/en/stable/executing/caching.html) by adding the flag `--cache` to any of the commands below.
-The workflow already defines which rules are eligible for caching, so no further arguments are required.
-When caching is enabled, Snakemake will automatically share those steps between different instances of this workflow.
+## Question 7
 
-Test your configuration by performing a dry-run via
+### a
 
-    snakemake --use-conda -n
 
-Execute the workflow locally via
 
-    snakemake --use-conda --cores $N
 
-using `$N` cores or run it in a cluster environment via
-
-    snakemake --use-conda --cluster qsub --jobs 100
-
-or
-
-    snakemake --use-conda --drmaa --jobs 100
-
-If you not only want to fix the software stack but also the underlying OS, use
-
-    snakemake --use-conda --use-singularity
-
-in combination with any of the modes above.
-
-See the [Snakemake documentation](https://snakemake.readthedocs.io/en/stable/executable.html) for further details (e.g. cloud execution).
-
-#### Step 4: Investigate results
-
-After successful execution, you can create a self-contained interactive HTML report with all results via:
-
-    snakemake --report report.html
-
-This report can, e.g., be forwarded to your collaborators.
-An example (using some trivial test data) can be seen [here](https://cdn.rawgit.com/snakemake-workflows/dna-seq-gatk-variant-calling/master/.test/report.html).
-
-#### Step 5: Commit changes
-
-Whenever you change something, don't forget to commit the changes back to your github copy of the repository:
-
-    git commit -a
-    git push
-
-#### Step 6: Obtain updates from upstream
-
-Whenever you want to synchronize your workflow copy with new developments from upstream, do the following.
-
-1. Once, register the upstream repository in your local copy: `git remote add -f upstream git@github.com:snakemake-workflows/dna-seq-gatk-variant-calling.git` or `git remote add -f upstream https://github.com/snakemake-workflows/dna-seq-gatk-variant-calling.git` if you do not have setup ssh keys.
-2. Update the upstream version: `git fetch upstream`.
-3. Create a diff with the current version: `git diff HEAD upstream/master rules scripts envs schemas report > upstream-changes.diff`.
-4. Investigate the changes: `vim upstream-changes.diff`.
-5. Apply the modified diff via: `git apply upstream-changes.diff`.
-6. Carefully check whether you need to update the config files: `git diff HEAD upstream/master config.yaml samples.tsv units.tsv`. If so, do it manually, and only where necessary, since you would otherwise likely overwrite your settings and samples.
-
-#### Step 7: Contribute back
-
-In case you have also changed or added steps, please consider contributing them back to the original repository:
-
-1. [Fork](https://help.github.com/en/articles/fork-a-repo) the original repo to a personal or lab account.
-2. [Clone](https://help.github.com/en/articles/cloning-a-repository) the fork to your local system, to a different place than where you ran your analysis.
-3. Copy the modified files from your analysis to the clone of your fork, e.g., `cp -r workflow path/to/fork`. Make sure to **not** accidentally copy config file contents or sample sheets. Instead, manually update the example config files if necessary.
-4. Commit and push your changes to your fork.
-5. Create a [pull request](https://help.github.com/en/articles/creating-a-pull-request) against the original repository.
-
-## Testing
-
-Test cases are in the subfolder `.test`. They are automtically executed via continuous integration with Github actions.
