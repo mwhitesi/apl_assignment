@@ -10,11 +10,21 @@
 For workflows involving external tools and multiple steps (such as variant calling), I have used the Smakemake workflow system. Snakemake has a number of 
 advantages to help make multi-step analyses easily deployable and reproducible.
 
-The Snakemake syntax is comprised of rules that determine the input/output data file dependencies and order of task execution. Snakemake has a predefined recommended project structure. I have cloned the Snakemake github template for GATK-based variant calling that uses this recommended structure.
+The Snakemake syntax is comprised of rules that determine the input/output data file dependencies and order of task execution. Snakemake has a predefined recommended project structure. I have cloned the Snakemake github template for GATK-based variant calling that uses this recommended structure (https://github.com/snakemake-workflows/dna-seq-gatk-variant-calling/).
 
 The structure is as follows:
 
+* envs - conda environment settings
+* report - report config for snakemake auto-reports
+* rules - auxilariy snakemake files (included in the main Snakefile)
+* schemas - JSON schema definitions 
 
+Snakemake will auto-generate the following directories:
+
+* resources - reference files (such as reference genome used in read mapping)
+* called - interim variant call files 
+* genotyped - final variant output files
+* logs - error and progress text files
 
 
 ## Question 3
@@ -34,13 +44,15 @@ To be explicit, the [rules/calling.smk](rules/calling.smk) snakemake file perfor
 
 ### Part 3b
 
-To validate and tune variant calling parameters, I would c
+To validate and tune variant calling parameters, I would 
 
 ## Question 4
 
-The process I would select to get the PCR data from the desktop would be to use a network shared folder as the conduit.  This network folder would be available on the local deskop with the PCR data files and would also be mounted on the server. The technician would be required to save the PCR data to network shared directory (New results would ideally be added to new files). I would create a python script or snakemake file that would be regularly scheduled (using cron for example) to monitor the network shared drive for new sample data across the network folder files. This approach requires minimal intervention from the technican and little configuration on the desktop computer. I have made a sample snakemake file to demonstrate how new data can be downloaded to the server across a network shared folder.
+The process I would select to get the PCR data from the desktop would be to use a network shared folder as the conduit.  This network folder would be available on the local deskop with the PCR data files and would also be mounted on the server. The technician would be required to save the PCR data to network shared directory (New results would ideally be added to new files). I would create a python script or snakemake file that would be regularly scheduled (using cron for example) to monitor the network shared drive for new sample data across the network folder files. This approach requires minimal intervention from the technican and little configuration on the desktop computer.
 
 ## Question 5
+
+To monitor multiple sources of input data is one of the strengths of Snakemake and easily orchestrated within an existing regularly scheduled Snakemake workflow. My approach would maintain lists tracking sample IDs appearing in PCR and genome sequence data as well as their status. Critical to integrating diverse analysis for different samples is to have a consistent sample identifiers. The snakemake task would identify amoung downloaded analysis data, 1) the set of pending BAM sample IDs and 2) the set of sample IDs with matched PCR / BAM data. The second set would be used to initiate downstream analysis in Snakemake. I made a sample snakemake [file](rules/pending.smk) to demonstrate the proposed workflow.
 
 ## Question 6 
 
@@ -52,7 +64,7 @@ Initially, I would deliver routine reports as a static HTML files. A HTML report
 
 ### Part 7b
 
-Automated QC/QA can be integrated into the snakemake workflow 
+Automated QC/QA can be integrated into the snakemake workflow as well as the final report generation. 
 
 ### Part 7c
 
