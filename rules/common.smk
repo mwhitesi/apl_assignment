@@ -19,6 +19,9 @@ units = pd.read_table(config["units"], dtype=str).set_index(["sample", "unit"], 
 units.index = units.index.set_levels([i.astype(str) for i in units.index.levels])  # enforce str in index
 validate(units, schema="../schemas/units.schema.yaml")
 
+pcrsamples = pd.read_table(config["pcr"]).set_index("sample", drop=False)
+validate(pcrsamples, schema="../schemas/pcr.schema.yaml")
+
 
 ##### Wildcard constraints #####
 wildcard_constraints:
@@ -34,7 +37,10 @@ def get_contigs():
     with checkpoints.genome_faidx.get().output[0].open() as fai:
         return pd.read_table(fai, header=None, usecols=[0], squeeze=True, dtype=str)
 
-def get_fastq(wildcards):
+def get_fastq(wildcards):input:
+        "{dataset}/inputfile"
+    output:
+        "{dataset}/file.{group}.txt"
     """Get fastq files of given sample-unit."""
     fastqs = units.loc[(wildcards.sample, wildcards.unit), ["fq1", "fq2"]].dropna()
     if len(fastqs) == 2:

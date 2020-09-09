@@ -1,0 +1,21 @@
+$schema: "http://json-schema.org/draft-04/schema#"
+description: row of the pcr.tsv, representing a single pcr result sample output
+type: object
+properties:
+  sample:
+    type: string
+    description: sample name/id
+  result1:
+    type: number
+    description: 1st result value
+  result2:
+    type: number
+    description: 2nd result value
+  result3:
+    type: number
+    description: 3rd result value
+required:
+  - sample
+  - result2
+  - result1
+  - result3
